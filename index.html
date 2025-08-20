@@ -99,7 +99,7 @@
   </select>
 
   <button class="btn clean">✅ TEMİZ</button>
-  <button class="btn medium">⚠️ AZ KİRLİ</button>
+  <button class="btn medium">⚠️ KISMEN TEMİZ</button>
   <button class="btn dirty">🚫 KİRLİ</button>
   <button class="btn feedback">💬 Görüş ve Öneri Bildirimi</button>
 
@@ -141,7 +141,7 @@
     }
 
     document.querySelector(".clean").onclick = () => sendTelegramMessage("✅ TEMİZ", "#2ecc71");
-    document.querySelector(".medium").onclick = () => sendTelegramMessage("⚠️ AZ KİRLİ", "#e67e22");
+    document.querySelector(".medium").onclick = () => sendTelegramMessage("⚠️  KISMEN TEMİZ", "#e67e22");
     document.querySelector(".dirty").onclick = () => sendTelegramMessage("🚫 KİRLİ", "#e74c3c");
     document.querySelector(".feedback").onclick = () => {
       const feedback = prompt("Görüş ve önerinizi yazınız:");
