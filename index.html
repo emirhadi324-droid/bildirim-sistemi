@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bildirım Sistemi</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    img {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    label, select, .btn {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    select {
+      background-color: #222;
+      color: #fff;
+    }
+    .btn.clean { background-color: #2ecc71; color: white; }
+    .btn.medium { background-color: #e67e22; color: white; }
+    .btn.dirty { background-color: #e74c3c; color: white; }
+    .btn.feedback { background-color: #2980b9; color: white; }
+
+    /* Tıklama animasyonu */
+    .btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2) inset;
+    }
+
+    /* Bildirim popup stili */
+    #notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2ecc71;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-size: 18px;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #notification .tick {
+      width: 20px;
+      height: 20px;
+      border-left: 3px solid #fff;
+      border-bottom: 3px solid #fff;
+      transform: rotate(-45deg);
+      animation: tickAnim 0.5s ease forwards;
+    }
+    @keyframes tickAnim {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(-45deg); opacity: 1; }
+      100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logo.jpg" alt="Logo">
+  <h2>Kulu Bölge Devlet Hastanesi<br>Bildirım Sistemi</h2>
+
+  <label for="area">Alan Seçimi:</label>
+  <select id="area">
+    <option value="Tuvalet 1">Tuvalet 1</option>
+    <option value="Tuvalet 2">Tuvalet 2</option>
+    <option value="Koridor">Koridor</option>
+    <option value="Mutfak">Mutfak</option>
+    <option value="Bekleme Salonu">Bekleme Salonu</option>
+  </select>
+
+  <button class="btn clean">✅ TEMİZ</button>
+  <button class="btn medium">⚠️ AZ KİRLİ</button>
+  <button class="btn dirty">🚫 KİRLİ</button>
+  <button class="btn feedback">💬 Görüş ve Öneri Bildirimi</button>
+
+  <!-- Bildirim popup -->
+  <div id="notification"><div class="tick"></div><span></span></div>
+
+  <!-- Bildirim sesi -->
+  <audio id="notifSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
+  <script>
+    const token = "8037793118:AAFYREIjuVklOQ6YW-ZRAjdsuhfO41A9r3U";
+    const chatId = "-1002933719599";
+    const notif = document.getElementById("notification");
+    const notifSound = document.getElementById("notifSound");
+
+    function showNotification(message, color="#2ecc71") {
+      notif.querySelector("span").textContent = message;
+      notif.style.backgroundColor = color;
+      notif.classList.add("show");
+      notifSound.currentTime = 0;
+      notifSound.play();
+      setTimeout(() => notif.classList.remove("show"), 2000);
+    }
+
+    function sendTelegramMessage(status, color="#2ecc71") {
+      const area = document.getElementById("area").value;
+      const message = `🚨 Temizlik Bildirimi\nAlan: ${area}\nDurum: ${status}\nTarih: ${new Date().toLocaleString()}`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+      })
+      .then(res => {
+        if(res.ok) showNotification("✅ Bildirim gönderildi!", color);
+        else showNotification("⚠️ Bildirim gönderilemedi!", "#e74c3c");
+      })
+      .catch(err => showNotification("⚠️ Hata: " + err, "#e74c3c"));
+    }
+
+    document.querySelector(".clean").onclick = () => sendTelegramMessage("✅ TEMİZ", "#2ecc71");
+    document.querySelector(".medium").onclick = () => sendTelegramMessage("⚠️ AZ KİRLİ", "#e67e22");
+    document.querySelector(".dirty").onclick = () => sendTelegramMessage("🚫 KİRLİ", "#e74c3c");
+    document.querySelector(".feedback").onclick = () => {
+      const feedback = prompt("Görüş ve önerinizi yazınız:");
+      if(feedback) sendTelegramMessage("💬 Görüş: " + feedback, "#2980b9");
+    };
+  </script>
+
+</body>
+</html>
