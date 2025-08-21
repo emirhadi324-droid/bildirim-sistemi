@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bildirım Sistemi - Asansör</title>
+  <style>
+    body {
+      background: #121212;
+      color: #f5f5f5;
+      font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    img {
+      width: 120px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      border: 2px solid #4caf50;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #e0e0e0;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+    }
+
+    label {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    select, .btn, #search {
+      display: block;
+      width: 90%;
+      max-width: 400px;
+      margin: 12px auto;
+      padding: 14px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    select {
+      background-color: #1f1f1f;
+      color: #f5f5f5;
+    }
+
+    #search {
+      background-color: #333;
+      color: #f5f5f5;
+    }
+
+    .btn {
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .btn.clean { background-color: #4caf50; color: #fff; }
+    .btn.medium { background-color: #ffb74d; color: #fff; }
+    .btn.dirty { background-color: #e57373; color: #fff; }
+    .btn.feedback { background-color: #64b5f6; color: #fff; }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3) inset;
+    }
+
+    #notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background-color: #4caf50;
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 14px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 1000;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+
+    #notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    #notification .tick {
+      width: 20px;
+      height: 20px;
+      border-left: 3px solid #fff;
+      border-bottom: 3px solid #fff;
+      transform: rotate(-45deg);
+      animation: tickAnim 0.5s ease forwards;
+    }
+
+    @keyframes tickAnim {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(-45deg); opacity: 1; }
+      100% { transform: scale(1) rotate(-45deg); opacity: 1; }
+    }
+
+    #suggestions {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: left;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      z-index: 500;
+    }
+
+    #suggestions div {
+      background: #1f1f1f;
+      color: #f5f5f5;
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #333;
+    }
+
+    #suggestions div:hover {
+      background: #333;
+    }
+
+    @media (max-width: 500px) {
+      select, .btn, #search { width: 95%; font-size: 15px; padding: 12px; }
+      h2 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logo.jpg" alt="Logo">
+  <h2>Kulu Bölge Devlet Hastanesi<br>Asansör Bildirım Sistemi</h2>
+
+  <label for="search">Asansör Ara:</label>
+  <input type="text" id="search" placeholder="Asansör numarasını giriniz...">
+  <div id="suggestions"></div>
+
+  <label for="area">Alan Seçimi:</label>
+  <select id="area">
+    <option value="Asansör 1">Asansör 1</option>
+    <option value="Asansör 2">Asansör 2</option>
+    <option value="Asansör 3">Asansör 3</option>
+    <option value="Asansör 4">Asansör 4</option>
+    <option value="Asansör 5">Asansör 5</option>
+    <option value="Asansör 6">Asansör 6</option>
+    <option value="Asansör 7">Asansör 7</option>
+    <option value="Asansör 8">Asansör 8</option>
+    <option value="Asansör 9">Asansör 9</option>
+    <option value="Asansör 10">Asansör 10</option>
+    <option value="Asansör 11">Asansör 11</option>
+    <option value="Asansör 12">Asansör 12</option>
+  </select>
+
+  <button class="btn clean">TEMİZ</button>
+  <button class="btn medium">KISMEN TEMİZ</button>
+  <button class="btn dirty">KİRLİ</button>
+  <button class="btn feedback">Görüş & Öneri</button>
+
+  <div id="notification"><div class="tick"></div><span></span></div>
+  <audio id="notifSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
+<script>
+  const token = "8037793118:AAFYREIjuVklOQ6YW-ZRAjdsuhfO41A9r3U";
+  const chatId = "-1002933719599";
+  const notif = document.getElementById("notification");
+  const notifSound = document.getElementById("notifSound");
+
+  function showNotification(message, color="#4caf50") {
+    notif.querySelector("span").textContent = message;
+    notif.style.backgroundColor = color;
+    notif.classList.add("show");
+    notifSound.currentTime = 0;
+    notifSound.play();
+    setTimeout(() => notif.classList.remove("show"), 2000);
+  }
+
+  function sendTelegramMessage(status, color="#4caf50") {
+    const area = document.getElementById("area").value;
+    const message = `🚨 Temizlik Bildirimi\nAlan: ${area}\nDurum: ${status}\nTarih: ${new Date().toLocaleString()}`;
+
+    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: message })
+    })
+    .then(res => {
+      if(res.ok) showNotification("✅ Bildirim gönderildi!", color);
+      else showNotification("⚠️ Bildirim gönderilemedi!", "#e57373");
+    })
+    .catch(err => showNotification("⚠️ Hata: " + err, "#e57373"));
+  }
+
+  document.querySelector(".clean").onclick = () => sendTelegramMessage("TEMİZ", "#4caf50");
+  document.querySelector(".medium").onclick = () => sendTelegramMessage("KISMEN TEMİZ", "#ffb74d");
+  document.querySelector(".dirty").onclick = () => sendTelegramMessage("KİRLİ", "#e57373");
+  document.querySelector(".feedback").onclick = () => {
+    const feedback = prompt("Görüş ve önerinizi yazınız:");
+    if(feedback) sendTelegramMessage("💬 Görüş: " + feedback, "#64b5f6");
+  };
+
+  // Autocomplete search
+  const searchInput = document.getElementById("search");
+  const select = document.getElementById("area");
+  const suggestionsDiv = document.getElementById("suggestions");
+
+  const elevators = Array.from(select.options).map(o => ({value: o.value, text: o.text}));
+
+  searchInput.addEventListener("input", () => {
+    const val = searchInput.value.trim().toLowerCase();
+    suggestionsDiv.innerHTML = "";
+    if(!val) return;
+
+    elevators.filter(r => r.value.toLowerCase().includes(val) || r.text.toLowerCase().includes(val))
+             .forEach(r => {
+      const div = document.createElement("div");
+      div.textContent = r.text;
+      div.addEventListener("click", () => {
+        searchInput.value = r.value;
+        select.value = r.value;
+        suggestionsDiv.innerHTML = "";
+      });
+      suggestionsDiv.appendChild(div);
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if(e.target !== searchInput) suggestionsDiv.innerHTML = "";
+  });
+</script>
+
+</body>
+</html>
